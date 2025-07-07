@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Location {
   x: number;
@@ -17,6 +17,7 @@ interface Point {
   location: Location;
   clicked: boolean;
   timer: number;
+  opacity: number;
 }
 
 function App() {
@@ -28,6 +29,13 @@ function App() {
   const [pointTarget, setPointTarget] = useState(1);
   const [isFinished, setIsFinished] = useState(false);
   // const [timeInPoint, setTimeInPoint] = useState<number>(200);
+  const gameOverRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (status === Status.GAME_OVER) {
+      gameOverRef.current = true;
+    }
+  }, [status]);
 
   useEffect(() => {
     let interval: any;
@@ -63,7 +71,7 @@ function App() {
     for (let i = Number(amount); i >= 1; i--) {
       const x = Math.floor(Math.random() * 650) + 1;
       const y = Math.floor(Math.random() * 400) + 1;
-      setPoints(points => [...points, { number: i, time: 3000, location: { x, y }, clicked: false, timer: 200 }]);
+      setPoints(points => [...points, { number: i, time: 3000, location: { x, y }, clicked: false, timer: 200, opacity: 100 }]);
     }
   }
 
@@ -81,11 +89,12 @@ function App() {
       );
 
       for (let j = 0; j < 20; j++) {
+        if (gameOverRef.current) return;
         await delay(0.1);
         // setTimeInPoint(timeInPoint => timeInPoint - 10);
         setPoints(points =>
           points.map(point =>
-            point.number === i ? { ...point, timer: point.timer - 10 } : point
+            point.number === i ? { ...point, timer: point.timer - 10, opacity: point.opacity - 5 } : point
           )
         );
       }
@@ -124,12 +133,12 @@ function App() {
       );
 
       for (let i = 0; i < 20; i++) {
-        if (status === Status.GAME_OVER) break;
+        if (gameOverRef.current) return;
         await delay(0.1);
         // setTimeInPoint(timeInPoint => timeInPoint - 10);
         setPoints(points =>
           points.map(point =>
-            point.number === number ? { ...point, timer: point.timer - 10 } : point
+            point.number === number ? { ...point, timer: point.timer - 10, opacity: point.opacity - 5 } : point
           )
         );
       }
@@ -176,12 +185,14 @@ function App() {
             className={`
               absolute w-13 h-13 rounded-full border border-red-500 flex items-center justify-center
               hover:cursor-pointer select-none
-              transition-opacity duration-[3s] flex flex-col items-center justify-center
-              ${point.clicked ? `bg-orange-500 text-white border-orange-500 opacity-0` : 'bg-white opacity-100'}
+              flex flex-col items-center justify-center
+              transition-transform duration-[3s]
+              ${point.clicked ? `bg-orange-500 text-white border-orange-500` : 'bg-white'}
             `}
             style={{
               top: `${point.location.y}px`,
-              left: `${point.location.x}px`
+              left: `${point.location.x}px`,
+              opacity: point.clicked ? point.opacity / 100 : 1
             }}
           >
             <p className={`text-xl ${point.clicked ? 'text-white' : ''}`}>{point.number}</p>
