@@ -74,7 +74,7 @@ function App() {
     gameOverRef.current = false;
 
     for (let i = Number(amount); i >= 1; i--) {
-      const x = Math.floor(Math.random() * 650) + 1;
+      const x = Math.floor(Math.random() * 650) + 10;
       const y = Math.floor(Math.random() * 400) + 1;
       setPoints(points => [...points, { number: i, time: 3000, location: { x, y }, clicked: false, timer: 200, opacity: 100 }]);
     }
@@ -149,8 +149,8 @@ function App() {
         <div className='flex flex-col justify-between'>
           <p className='text-xl'>Points: </p>
           <p className='text-xl'>Time: </p>
-          <p className='text-xl'>{pointTarget}</p>
-          <p className='text-xl'>{points.map(point => point.number).join(', ')}</p>
+          {/* <p className='text-xl'>{pointTarget}</p>
+          <p className='text-xl'>{points.map(point => point.number).join(', ')}</p> */}
         </div>
         <div className='flex flex-col justify-between'>
           <input value={amount} onChange={(e) => {
