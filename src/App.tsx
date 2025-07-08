@@ -49,7 +49,7 @@ function App() {
       }, 100);
     }
 
-    if (pointTarget.current - 1 === Number(amount)) {
+    if (pointTarget.current - 1 === Number(amount) && isRunning) {
       timeout = setTimeout(() => {
         setStatus(Status.ALL_CLEARED);
         setIsRunning(false);
@@ -64,18 +64,6 @@ function App() {
     }
   }, [isRunning, pointTarget.current]);
 
-  // const handleReset = () => {
-  //   setTimer(0);
-  //   pointTarget.current = 1;
-  //   setPoints([]);
-  //   setStatus(Status.LETS_PLAY);
-  //   setIsRunning(false);
-  //   setIsFinished(false);
-  //   setShowWinModal(false);
-  //   setShowLoseModal(false);
-  //   gameOverRef.current = false;
-  //   handleStart();
-  // }
 
   const handleStart = () => {
     // Clear all state
